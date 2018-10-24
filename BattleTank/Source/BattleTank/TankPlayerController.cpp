@@ -22,3 +22,18 @@ void ATankPlayerController::BeginPlay() {
 	}*/
 	
 }
+
+void ATankPlayerController::AimTowardsCrosshair() {
+	if (!this->GetControlledTank()) { return; }
+
+	// Get world location of linetrace through crosshair.
+	// If it hits the landscape.
+
+
+}
+
+void ATankPlayerController::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+	AimTowardsCrosshair();
+}
+
