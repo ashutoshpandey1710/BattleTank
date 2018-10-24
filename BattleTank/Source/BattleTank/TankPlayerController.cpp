@@ -12,13 +12,13 @@ ATank* ATankPlayerController::GetControlledTank() const {
 void ATankPlayerController::BeginPlay() {
 	Super::BeginPlay();
 
-	ATank* PosessedTank = this->GetControlledTank();
+	/*ATank* PosessedTank = this->GetControlledTank();
 
 	if (PosessedTank) {
 		UE_LOG(LogTemp, Warning, TEXT("Player Posessed Tank: %s"), *(PosessedTank->GetName()));
 	}
 	else {
 		UE_LOG(LogTemp, Error, TEXT("ATankPlayerController: No tank found!"));
-	}
+	}*/
 	
 }
