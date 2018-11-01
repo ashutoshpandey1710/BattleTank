@@ -19,24 +19,26 @@ void ATankAIController::BeginPlay() {
 	auto PlayerTank = this->GetPlayerTank();
 	auto AIPosessedTank = this->GetControlledTank();
 
+	
 	if (PlayerTank) {
 		if (AIPosessedTank) {
-			UE_LOG(LogTemp, Warning, TEXT("ATankAIController for %s::BeginPlay: Player Tank: %s"),*(AIPosessedTank->GetName()), *(PlayerTank->GetName()));
+			//UE_LOG(LogTemp, Warning, TEXT("ATankAIController for %s::BeginPlay: Player Tank: %s"),*(AIPosessedTank->GetName()), *(PlayerTank->GetName()));
+			//AIPosessedTank->AimAt(HitLocatoin);
 		}
 		else {
-			UE_LOG(LogTemp, Error, TEXT("ATankAIController::BeginPlay: Could not find posessed tank."));
+			UE_LOG(LogTemp, Error, TEXT("ATankAIController::BeginPlay: Could not find current AI posessed tank."));
 		}
 	}
 	else {
 		UE_LOG(LogTemp, Error, TEXT("ATankAIController::BeginPlay: Could not find player tank."));
 	}
+}
 
-	/*if (AIPosessedTank) {
-		UE_LOG(LogTemp, Warning, TEXT("ATankAIController::BeginPlay: AI Posessed Tank: %s"), *(AIPosessedTank->GetName()));
-	}
-	else {
-		UE_LOG(LogTemp, Error, TEXT("ATankAIController::BeginPlay: No tank found!"));
-	}*/
+void ATankAIController::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+	
+	FVector HitLocatoin = this->GetPlayerTank()->GetActorLocation();
+	this->GetControlledTank()->AimAt(HitLocatoin);
 }
 
 ATank * ATankAIController::GetPlayerTank() const {
