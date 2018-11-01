@@ -13,9 +13,14 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) cons
 
 	GetViewportSize(ViewportSizeX, ViewportSizeY);
 
-	FVector2D ScreenLocatoin(this->CrosshairXLocation * ViewportSizeX, this->CrosshairYLocation * ViewportSizeY);
+	FVector2D ScreenLocation(this->CrosshairXLocation * ViewportSizeX, this->CrosshairYLocation * ViewportSizeY);
 	
-	UE_LOG(LogTemp, Warning, TEXT("ScreenLocation: %s"), *(ScreenLocatoin.ToString()));
+	FVector LookDirection;
+	if (GetLookDirection(ScreenLocation, LookDirection)) {
+		GetLookVectorHitLocation(LookDirection, OutHitLocation);
+	}
+	
+
 	return true;
 }
 
@@ -25,7 +30,7 @@ ATank* ATankPlayerController::GetControlledTank() const {
 
 void ATankPlayerController::BeginPlay() {
 	Super::BeginPlay();
-	
+	this->World = GetWorld();
 }
 
 void ATankPlayerController::AimTowardsCrosshair() {
@@ -38,7 +43,7 @@ void ATankPlayerController::AimTowardsCrosshair() {
 	FVector HitLocation;
 	if (GetSightRayHitLocation(HitLocation)) {
 		// TODO Tell controlled tank to aim at this location.
-		/*UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"), *(HitLocation.ToString()));*/
+		UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"), *(HitLocation.ToString()));
 	}
 	
 }
@@ -46,5 +51,43 @@ void ATankPlayerController::AimTowardsCrosshair() {
 void ATankPlayerController::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	AimTowardsCrosshair();
+}
+
+bool ATankPlayerController::GetLookDirection(
+	FVector2D CrosshairScreenLocation, 
+	FVector & LookDirection) const	
+{
+	FVector CameraWorldLocation;
+	return DeprojectScreenPositionToWorld(
+		CrosshairScreenLocation.X, 
+		CrosshairScreenLocation.Y, 
+		CameraWorldLocation, 
+		LookDirection);
+}
+
+bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVector & OutHitLocation) const {
+	if (this->World) {
+		FVector TraceStart = PlayerCameraManager->GetCameraLocation();
+		FVector TraceEnd = TraceStart + LookDirection * this->LineTraceRange;
+		
+		FHitResult HitResult;
+		bool DidItHit = this->World->LineTraceSingleByChannel(
+			HitResult,
+			TraceStart,
+			TraceEnd,
+			ECC_Visibility);
+		if (DidItHit) {
+			OutHitLocation.X = HitResult.ImpactPoint.X;
+			OutHitLocation.Y = HitResult.ImpactPoint.Y;
+			OutHitLocation.Z = HitResult.ImpactPoint.Z;
+		}
+
+		DrawDebugLine(this->World, TraceStart, TraceEnd, FColor(0xcc2626), false, -1.0, 0, 2.0f);
+		return DidItHit;
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("GetLookVectorHitLocation: Could not initialize World Object."));
+		return false;
+	}
 }
 

@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "Tank.h"
+#include"Runtime/Engine/Public/DrawDebugHelpers.h"
+#include "Runtime/Engine/Classes/Camera/PlayerCameraManager.h"
+#include "Engine/World.h"
 #include "TankPlayerController.generated.h"
 
 //Tick
@@ -27,6 +30,10 @@ private:
 	UPROPERTY(EditAnywhere)
 	float CrosshairYLocation = 0.33333;
 
+	const float LineTraceRange = 10.0 * 100.0 * 1000.0;
+
+	UWorld* World = nullptr;
+
 public:
 	ATank* GetControlledTank() const;
 	void BeginPlay() override;
@@ -35,6 +42,9 @@ public:
 	void AimTowardsCrosshair();
 
 	void Tick(float DeltaTime) override;
+
+	bool GetLookDirection(FVector2D CrosshairScreenLocation, FVector& LookDirection) const;
+	bool GetLookVectorHitLocation(FVector LookDirection, FVector& OutHitLocation) const;
 	
 	
 };
