@@ -63,12 +63,12 @@ void UTankAimingComponent::AimAt(FVector Location, float LaunchSpeed) {
 				// Set Turret Z rotation to the z rotation of the aim velocity unit vector
 				// Set Barrel Y rotation to the y rotation of the aim velocity unit vector.
 			//UE_LOG(LogTemp, Warning, TEXT("Firing at %s from %s"), *(AimDirection.ToString()), *(BarrelLocation.ToString()));
-			auto Time = GetWorld()->GetTimeSeconds();
-			UE_LOG(LogTemp, Warning, TEXT("%f: Aim Solution Found. %s"), Time, *(AimDirection.ToString()));
+			//auto Time = GetWorld()->GetTimeSeconds();
+			//UE_LOG(LogTemp, Warning, TEXT("%f: Aim Solution Found. %s"), Time, *(AimDirection.ToString()));
 		}
 		else {
-			auto Time = GetWorld()->GetTimeSeconds();
-			UE_LOG(LogTemp, Warning, TEXT("%f: No aim solution found."), Time);
+			//auto Time = GetWorld()->GetTimeSeconds();
+			//UE_LOG(LogTemp, Warning, TEXT("%f: No aim solution found."), Time);
 		}
 	}
 }

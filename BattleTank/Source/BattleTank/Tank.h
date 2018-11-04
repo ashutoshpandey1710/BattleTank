@@ -7,7 +7,7 @@
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h"
 
-
+class AProjectile;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -27,6 +27,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Setup)
 		void SetTurretReference(UTankTurret* TurretToSet);
 
+	UFUNCTION(BlueprintCallable, Category = Setup)
+		void Fire();
+
 protected:
 	UTankAimingComponent* TankAimingComponent = nullptr;
 
@@ -39,4 +42,10 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = Firing)
 		float LaunchSpeed = 4000.0f;
+
+	UPROPERTY(EditAnywhere, Category = Setup)
+		TSubclassOf<AProjectile> Projectile;
+		//UClass* ProjectileBlueprint = nullptr; //Alternative https://docs.unrealengine.com/latest/INT/Programming/UnrealArchitecture/TSubclassOf
+
+	UTankBarrel* Barrel = nullptr;
 };
