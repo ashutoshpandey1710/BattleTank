@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankAimingComponent.h"
-
+#include "TankBarrel.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -14,26 +14,9 @@ UTankAimingComponent::UTankAimingComponent()
 }
 
 
-// Called when the game starts
-void UTankAimingComponent::BeginPlay()
-{
-	Super::BeginPlay();
 
-	// ...
-	
-}
-
-
-void UTankAimingComponent::SetBarrelReference(UStaticMeshComponent * BarrelToSet) {
+void UTankAimingComponent::SetBarrelReference(UTankBarrel * BarrelToSet) {
 	this->Barrel = BarrelToSet;
-}
-
-// Called every frame
-void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
 void UTankAimingComponent::AimAt(FVector Location, float LaunchSpeed) {
@@ -41,22 +24,38 @@ void UTankAimingComponent::AimAt(FVector Location, float LaunchSpeed) {
 	AActor* Owner = this->GetOwner();
 	if (!Owner) {
 		UE_LOG(LogTemp, Error, TEXT("Could not find owner of aiming component."));
+		return;
 	}
 	else {
 		auto BarrelLocation = this->Barrel->GetSocketLocation(FName("Projectile"));
 
 		FVector LaunchVelocity(0.0);
 		if (!this->Barrel) { 
-			UE_LOG(LogTemp, Error, TEXT("Could not find owner of barrel.")); 
+			UE_LOG(LogTemp, Error, TEXT("Could not find owner of barrel."));
+			return;
 		}
-		if (UGameplayStatics::SuggestProjectileVelocity(this,
-			LaunchVelocity, BarrelLocation, Location, LaunchSpeed)) {
+
+		bool bHaveFiringSolution = UGameplayStatics::SuggestProjectileVelocity(this,
+			LaunchVelocity, BarrelLocation, Location, LaunchSpeed);
+		
+		if (bHaveFiringSolution) {
 
 			auto AimDirection = LaunchVelocity.GetSafeNormal();
-			UE_LOG(LogTemp, Warning, TEXT("Firing at %s from %s"), *(AimDirection.ToString()), *(BarrelLocation.ToString()));
+			MoveBarrelTowards(AimDirection);
+			//MoveBarrel();
+				// Set Turret Z rotation to the z rotation of the aim velocity unit vector
+				// Set Barrel Y rotation to the y rotation of the aim velocity unit vector.
+			//UE_LOG(LogTemp, Warning, TEXT("Firing at %s from %s"), *(AimDirection.ToString()), *(BarrelLocation.ToString()));
 		}
-
-		/*UE_LOG(LogTemp, Warning, TEXT("Firing at %f from %s"), LaunchSpeed, *(BarrelLocation.ToString()));*/
 	}
+}
+
+void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection) {
+	auto BarrelRotator = this->Barrel->GetForwardVector().Rotation();
+	auto AimAsRotator = AimDirection.Rotation();
+	auto DeltaRotator = AimAsRotator - BarrelRotator;
+
+
+	UE_LOG(LogTemp, Warning, TEXT("AimAsRotator: %s"), *(AimAsRotator.ToString()));
 }
 
