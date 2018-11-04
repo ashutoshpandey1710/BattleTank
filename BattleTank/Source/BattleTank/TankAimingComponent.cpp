@@ -44,7 +44,17 @@ void UTankAimingComponent::AimAt(FVector Location, float LaunchSpeed) {
 	}
 	else {
 		auto BarrelLocation = this->Barrel->GetSocketLocation(FName("Projectile"));
-		UE_LOG(LogTemp, Warning, TEXT("Firing at %f from %s"), LaunchSpeed, *(BarrelLocation.ToString()));
+
+		FVector LaunchVelocity(0.0);
+		if (!this->Barrel) { 
+			UE_LOG(LogTemp, Error, TEXT("Could not find owner of barrel.")); 
+		}
+		if (UGameplayStatics::SuggestProjectileVelocity(this,
+			LaunchVelocity, BarrelLocation, Location, LaunchSpeed)) {
+			UE_LOG(LogTemp, Warning, TEXT("Firing at %s from %s"), *(LaunchVelocity.ToString()), *(BarrelLocation.ToString()));
+		}
+
+		/*UE_LOG(LogTemp, Warning, TEXT("Firing at %f from %s"), LaunchSpeed, *(BarrelLocation.ToString()));*/
 	}
 }
 
