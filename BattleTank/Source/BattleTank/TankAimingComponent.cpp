@@ -24,6 +24,10 @@ void UTankAimingComponent::BeginPlay()
 }
 
 
+void UTankAimingComponent::SetBarrelReference(UStaticMeshComponent * BarrelToSet) {
+	this->Barrel = BarrelToSet;
+}
+
 // Called every frame
 void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -39,7 +43,8 @@ void UTankAimingComponent::AimAt(FVector Location) {
 		UE_LOG(LogTemp, Error, TEXT("Could not find owner of aiming component."));
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("Tank %s HitLocation: %s"), *(Owner->GetName()), *(Location.ToString()));
+		auto BarrelLocation = this->Barrel->GetSocketLocation(FName("Projectile"));
+		UE_LOG(LogTemp, Warning, TEXT("Tank %s aiming at %s from %s"), *(Owner->GetName()), *(Location.ToString()), *(BarrelLocation.ToString()));
 	}
 }
 
