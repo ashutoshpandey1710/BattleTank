@@ -51,7 +51,9 @@ void UTankAimingComponent::AimAt(FVector Location, float LaunchSpeed) {
 		}
 		if (UGameplayStatics::SuggestProjectileVelocity(this,
 			LaunchVelocity, BarrelLocation, Location, LaunchSpeed)) {
-			UE_LOG(LogTemp, Warning, TEXT("Firing at %s from %s"), *(LaunchVelocity.ToString()), *(BarrelLocation.ToString()));
+
+			auto AimDirection = LaunchVelocity.GetSafeNormal();
+			UE_LOG(LogTemp, Warning, TEXT("Firing at %s from %s"), *(AimDirection.ToString()), *(BarrelLocation.ToString()));
 		}
 
 		/*UE_LOG(LogTemp, Warning, TEXT("Firing at %f from %s"), LaunchSpeed, *(BarrelLocation.ToString()));*/
