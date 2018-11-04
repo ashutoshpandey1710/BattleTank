@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankAimingComponent.h"
+#include "Engine/World.h"
 #include "TankBarrel.h"
+#include "TankTurret.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -17,6 +19,10 @@ UTankAimingComponent::UTankAimingComponent()
 
 void UTankAimingComponent::SetBarrelReference(UTankBarrel * BarrelToSet) {
 	this->Barrel = BarrelToSet;
+}
+
+void UTankAimingComponent::SetTurretReference(UTankTurret * TurretToSet) {
+	this->Turret = TurretToSet;
 }
 
 void UTankAimingComponent::AimAt(FVector Location, float LaunchSpeed) {
@@ -35,8 +41,17 @@ void UTankAimingComponent::AimAt(FVector Location, float LaunchSpeed) {
 			return;
 		}
 
-		bool bHaveFiringSolution = UGameplayStatics::SuggestProjectileVelocity(this,
-			LaunchVelocity, BarrelLocation, Location, LaunchSpeed);
+		bool bHaveFiringSolution = UGameplayStatics::SuggestProjectileVelocity(
+			this,
+			LaunchVelocity,
+			BarrelLocation,
+			Location,
+			LaunchSpeed,
+			false,
+			0.0f,
+			0.0f
+			, ESuggestProjVelocityTraceOption::DoNotTrace); // Parameter must be present to prevent aim solution bug.
+		
 		
 		if (bHaveFiringSolution) {
 
@@ -46,6 +61,12 @@ void UTankAimingComponent::AimAt(FVector Location, float LaunchSpeed) {
 				// Set Turret Z rotation to the z rotation of the aim velocity unit vector
 				// Set Barrel Y rotation to the y rotation of the aim velocity unit vector.
 			//UE_LOG(LogTemp, Warning, TEXT("Firing at %s from %s"), *(AimDirection.ToString()), *(BarrelLocation.ToString()));
+			auto Time = GetWorld()->GetTimeSeconds();
+			UE_LOG(LogTemp, Warning, TEXT("%f: Aim Solution Found. %s"), Time, *(AimDirection.ToString()));
+		}
+		else {
+			auto Time = GetWorld()->GetTimeSeconds();
+			UE_LOG(LogTemp, Warning, TEXT("%f: No aim solution found."), Time);
 		}
 	}
 }
@@ -55,7 +76,6 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection) {
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 
-
-	UE_LOG(LogTemp, Warning, TEXT("AimAsRotator: %s"), *(AimAsRotator.ToString()));
+	this->Barrel->ElevateBarrel(DeltaRotator.Pitch); //TODO replace magic number
 }
 
