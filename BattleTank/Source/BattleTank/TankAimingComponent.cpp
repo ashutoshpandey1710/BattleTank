@@ -36,7 +36,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UTankAimingComponent::AimAt(FVector Location) {
+void UTankAimingComponent::AimAt(FVector Location, float LaunchSpeed) {
 
 	AActor* Owner = this->GetOwner();
 	if (!Owner) {
@@ -44,7 +44,7 @@ void UTankAimingComponent::AimAt(FVector Location) {
 	}
 	else {
 		auto BarrelLocation = this->Barrel->GetSocketLocation(FName("Projectile"));
-		UE_LOG(LogTemp, Warning, TEXT("Tank %s aiming at %s from %s"), *(Owner->GetName()), *(Location.ToString()), *(BarrelLocation.ToString()));
+		UE_LOG(LogTemp, Warning, TEXT("Firing at %f from %s"), LaunchSpeed, *(BarrelLocation.ToString()));
 	}
 }
 
