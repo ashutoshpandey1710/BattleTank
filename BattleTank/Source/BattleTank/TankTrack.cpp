@@ -6,11 +6,6 @@
 void UTankTrack::SetThrottle(float Throttle) {
 	this->Throttle = Throttle;
 
-	if (FGenericPlatformMath::Abs(this->Throttle - 0.0f) > 0.0001f) {
-		auto Time = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%f: %s throttle is at %f"), Time, *(this->GetName()), this->Throttle);
-	}
-
 	FVector ForceApplied = this->GetForwardVector() * this->Throttle * this->TrackMaxDrivingForce;
 	FVector ForceLocation = this->GetComponentLocation();
 
