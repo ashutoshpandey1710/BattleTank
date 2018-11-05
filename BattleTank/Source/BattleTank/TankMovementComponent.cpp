@@ -37,3 +37,22 @@ void UTankMovementComponent::Initialize(UTankTrack * LeftTrack, UTankTrack * Rig
 	this->LeftTrack = LeftTrack;
 	this->RightTrack = RightTrack;
 }
+
+void UTankMovementComponent::RequestDirectMove(const FVector & MoveVelocity, bool bForceMaxSpeed) {
+
+	// No need to call Super as we're replacing the function in the NavMovementComponent.
+
+	auto Time = GetWorld()->GetTimeSeconds();
+	
+	auto TankName = this->GetOwner()->GetName();
+
+	auto AIForwardIntention = MoveVelocity.GetSafeNormal();
+	auto TankForward = this->GetOwner()->GetActorForwardVector().GetSafeNormal();
+
+	float DotP = FVector::DotProduct(AIForwardIntention, TankForward);
+	
+	UE_LOG(LogTemp, Warning, TEXT("%f: %s wants to move in direction: %f"), Time, *TankName, DotP);
+	this->IntendMoveForward(DotP);
+
+	//UE_LOG(LogTemp, Warning, TEXT("%f: %s wants to move in direction: %s"), Time, *TankName, *(MoveVelocity.GetSafeNormal().ToString()));
+}

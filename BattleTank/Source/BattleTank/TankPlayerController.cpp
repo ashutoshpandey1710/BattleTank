@@ -82,7 +82,6 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVec
 			OutHitLocation.Z = HitResult.ImpactPoint.Z;
 		}
 
-		DrawDebugLine(this->World, TraceStart, TraceEnd, FColor(0xcc2626), false, -1.0, 0, 2.0f);
 		return DidItHit;
 	}
 	else {

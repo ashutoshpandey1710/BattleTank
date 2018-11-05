@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "Tank.h"
-#include "Engine/World.h"
 #include "TankAIController.generated.h"
 
 /**
@@ -20,4 +18,5 @@ private:
 	void BeginPlay() override;
 	void Tick(float DeltaTime) override;
 	
+	float AcceptanceRadius = 300.0f; // How close can the AI tank get to  the player.
 };
