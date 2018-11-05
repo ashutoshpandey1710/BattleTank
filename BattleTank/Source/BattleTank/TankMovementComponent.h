@@ -9,6 +9,9 @@
 /**
  *  Fly by wire intent based controller.
  */
+
+class UTankTrack;
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class BATTLETANK_API UTankMovementComponent : public UNavMovementComponent
 {
@@ -18,5 +21,18 @@ class BATTLETANK_API UTankMovementComponent : public UNavMovementComponent
 public:
 	UFUNCTION(BlueprintCallable, Category = Movement)
 	void IntendMoveForward(float Throw);
+
+	UFUNCTION(BlueprintCallable, Category = Movement)
+		void IntendTurnLeft(float Throw);
+
+	UFUNCTION(BlueprintCallable, Category = Movement)
+		void IntendTurnRight(float Throw);
+
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	void Initialize(UTankTrack* LeftTrack, UTankTrack* RightTrack);
+
+private:
+	UTankTrack* LeftTrack = nullptr;
+	UTankTrack* RightTrack = nullptr;
 
 };
